@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.so
+*.egg-info/
+build/
+dist/
+
+# Runtime data
+ytscript.storage/
+ytscript.storage.failed/
+logs/
+.claude/skills/*/output/
+
+# Environment
+.env
+.venv/
+venv/
+
+# Editors and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
