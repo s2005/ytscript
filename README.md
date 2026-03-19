@@ -1,4 +1,4 @@
-# ytscript-public
+# ytscript
 
 Template repository for a git-backed transcript archiver.
 
