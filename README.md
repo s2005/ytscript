@@ -1,15 +1,15 @@
 # ytscript
 
-Template repository for a git-backed transcript archiver.
+Template repository for a git-backed transcript archiver using the ytscript skill.
 
-Use this repository as a starting point for storing generated transcripts in a dated folder structure and committing them automatically.
+Download YouTube video transcripts as formatted markdown documents and archive them in a dated folder structure.
 
 ## Using As A Template
 
 1. Create a new repository from this one.
 2. Copy `.env.example` to `.env` if you want local defaults for git identity or repo name.
-3. Drop generated transcript files into `ytscript.storage/`.
-4. Run the sync scripts to archive and commit them into your own repo.
+3. Install `uv` for running the transcript script: `python3 -m pip install uv`
+4. Use the ytscript skill to download transcripts
 
 ## Archive Statistics
 
@@ -19,11 +19,36 @@ Use this repository as a starting point for storing generated transcripts in a d
 
 ## Usage
 
+The ytscript skill downloads transcripts to `.claude/skills/ytscript/output/` (gitignored working directory).
+
+### Download Transcript
+
 ```bash
-cp .env.example .env
-python src/sync_transcript.py ytscript.storage/example.md --title "Example Video"
-./scripts/force_sync.sh
-python src/update_index.py
+cd .claude/skills/ytscript
+uv run scripts/get_transcript.py "https://youtube.com/watch?v=VIDEO_ID"
+```
+
+Optional: Set custom output directory via environment variable:
+
+```bash
+export YTSCRIPT_OUTPUT_DIR="/path/to/output"
+uv run scripts/get_transcript.py "https://youtube.com/watch?v=VIDEO_ID"
+```
+
+### Archive and Commit
+
+After AI formats the transcript in place, move it to the archive:
+
+```bash
+# Move to dated directory structure
+TRANSCRIPT_FILE=".claude/skills/ytscript/output/Video_Title.md"
+ARCHIVE_DATE="$(date +%Y/%m/%d)"
+mkdir -p "$ARCHIVE_DATE"
+mv "$TRANSCRIPT_FILE" "$ARCHIVE_DATE/Video_Title.md"
+
+# Commit to git
+git add "$ARCHIVE_DATE/Video_Title.md"
+git commit -m "Add transcript: Video Title" -m "Source: https://www.youtube.com/watch?v=VIDEO_ID"
 ```
 
 ## Script Documentation
@@ -36,14 +61,16 @@ python src/update_index.py
 ## Layout
 
 ```text
-ytscript.storage/         # Incoming transcript staging area
-ytscript.storage.failed/  # Failed syncs
-YYYY/MM/DD/*.md           # Archived transcripts
-src/                      # Core logic
-scripts/                  # Helper shell scripts
-logs/                     # Runtime logs
+.claude/skills/ytscript/output/  # Downloaded transcripts (gitignored)
+YYYY/MM/DD/*.md                  # Archived transcripts
+src/                             # Core logic
+scripts/                         # Helper shell scripts
+docs/                            # Documentation
 ```
 
 ## Notes
 
-This template does not include archived transcript content, logs, secrets, or private git history.
+- This template uses a two-stage workflow: download/edit in gitignored directory, then archive and commit
+- Filenames are automatically sanitized (emojis and special characters removed)
+- Transcripts are formatted as markdown with video link included
+- The skill itself does not include archiving logic - that's project-specific
