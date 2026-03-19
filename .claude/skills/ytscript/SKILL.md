@@ -19,6 +19,15 @@ The script is intended to be executed with `uv run`. Its Python requirement and 
 - **Clean Filenames:** Automatically removes emojis and special characters for better file system compatibility.
 - **Configurable Output:** Uses environment variable `YTSCRIPT_OUTPUT_DIR` for output location (default: `output/` subdirectory).
 
+## Workflow Checklist (ALL STEPS REQUIRED)
+
+1. [ ] Download transcript to output/ directory
+2. [ ] Format with sections and proper markdown
+3. [ ] Verify with markdownlint (only MD013 ignored)
+4. [ ] Move to YYYY/MM/DD/ archive directory
+5. [ ] Commit to git with proper message
+6. [ ] Deliver summary to user
+
 ## Usage
 
 Use this skill when:
@@ -128,7 +137,7 @@ Example:
 
 After formatting and validation, deliver the transcript to the user:
 
-1. **Sync to GitHub (optional)** - If using a repository system like ytfav, archive the transcript
+1. **Archive to Git (REQUIRED)** - ALWAYS archive the transcript to the repository with dated directory structure
 2. **Send the file** - Use appropriate delivery method for your platform
 3. **Write summary** - Provide a concise summary of the video content with key points
    - List main topics/reasons covered
@@ -152,9 +161,9 @@ After formatting and validation, deliver the transcript to the user:
 **Full transcript:** [File path to transcript]
 ```
 
-### Git Archiving (ytscript-public Template)
+### Git Archiving (MANDATORY STEP)
 
-**IMPORTANT:** This template uses a two-stage workflow for transcript archiving.
+**CRITICAL:** ALL transcripts MUST be archived to git following this two-stage workflow.
 
 **Workflow:**
 
@@ -212,28 +221,6 @@ mv "$TRANSCRIPT_FILE" "$ARCHIVE_DATE/Video_Title.md"
 git add "$ARCHIVE_DATE/Video_Title.md"
 git commit -m "Add transcript: Video Title" -m "Source: https://www.youtube.com/watch?v=VIDEO_ID"
 ```
-
-### Optional GitHub Integration
-
-If you want to automatically archive transcripts to a GitHub repository:
-
-**Workflow:**
-
-1. Set `YTSCRIPT_OUTPUT_DIR` environment variable to your archive directory
-2. ytscript downloads transcript to that directory
-3. AI formats transcript with meaningful filename
-4. Use your synchronization tool (git, ytfav, etc.) to commit and push
-
-**Example with environment variable:**
-
-```bash
-export YTSCRIPT_OUTPUT_DIR="/path/to/your/archive/storage"
-cd <SKILL_PATH>/ytscript
-uv run scripts/get_transcript.py "https://youtube.com/watch?v=abc123"
-# Transcript saved to: /path/to/your/archive/storage/VideoTitle.md
-```
-
-**Note:** The skill itself does not include archiving logic - that's project-specific. The transcript is saved to the location specified by `YTSCRIPT_OUTPUT_DIR` or the default `output/` subdirectory.
 
 ### Markdown Linter Compliance
 
